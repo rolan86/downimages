@@ -1,0 +1,59 @@
+---
+- hosts: remote
+  become: yes
+  become_user: root
+  tasks:
+   - name: Install python-pip
+     apt:
+       name: python-pip
+       state: installed
+       update_cache: true
+
+   - name: Create ansible-test directory
+     file:
+       path: /root/ansible-test
+       state: directory
+       owner: root
+       group: root
+
+   - name: Copy python script
+     copy:
+       src: downloader.py
+       dest: /root/ansible-test
+       owner: root
+       group: root
+
+   - name: Copy requirements file
+     copy:
+       src: requirements.txt
+       dest: /root/ansible-test
+       owner: root
+       group: root
+
+   - name: Copy urls file
+     copy:
+       src: urls.txt
+       dest: /root/ansible-test
+       owner: root
+       group: root
+
+   - name: Install pip requirements
+     pip:
+       requirements: /root/ansible-test/requirements.txt
+   
+   - name: Copy app.py file
+     copy:
+       src: app.py
+       dest: /root/ansible-test
+       owner: root
+       group: root
+
+   - cron:
+       name: "Run Python Script"
+       minute: "5"
+       job: "python /root/ansible-test/downloader.py /root/ansible-test/urls.txt"
+
+   - cron:
+       name: "Run Flask"
+       minute: "5"
+       job: "python /root/ansible-test/app.py"
