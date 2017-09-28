@@ -12,11 +12,20 @@ Download images and serve via a webserver
     b. ansible-playbook -i ./hosts install.yml
     The command a. will ask for the server password, please enter that so as to authenticate the servers
     The command b. will install all the requirements, copy the files necessary, and start up the webserver.
-6. The webserver will start up through cron and the download and scraping will happen through cron as well.
+6. The webserver will start up via gunicorn and supervisor and server via nginx server
 
 Note.: Currently the python downloader.py script has been fed with urls.txt file in the ansible install.yml playbook.
 If you need to change the file name, change at the appropriate places in the install.yml playbook.
+Also, make sure that you have python 2.7.x installed on your servers since ansible works only with them
 
 This install.yml file is currently being worked upon to include dynamic update of the url files.
 
-The images will be served at <server_ip>:5000
+The images will be served at <server_ip>
+
+
+Pre-Requisites [Developed on]:
+OS:                     Ubuntu 16.04
+Platform Language:      Python 2.7.12
+Configuration Manager:  Ansible
+Server:                 Nginx
+Frameworks:             Flask
