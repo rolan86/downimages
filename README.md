@@ -8,10 +8,14 @@ Download images and serve via a webserver
     b. pip install -r initial_reqs.txt
 4. In the hosts file under [remote] add the any server ip you would like to run the script on.
 5. Run the following commands:
+
     a. ansible -i ./hosts --ask-pass --ssh-extra-args='-o "PubkeyAuthentication=no"' remote -m ping
+    
     b. ansible-playbook -i ./hosts install.yml
+    
     The command a. will ask for the server password, please enter that so as to authenticate the servers
     The command b. will install all the requirements, copy the files necessary, and start up the webserver.
+    
 6. The webserver will start up via gunicorn and supervisor and server via nginx server
 
 Note.: Currently the python downloader.py script has been fed with urls.txt file in the ansible install.yml playbook.
