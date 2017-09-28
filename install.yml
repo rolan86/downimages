@@ -9,6 +9,45 @@
        state: installed
        update_cache: true
 
+   - name: Install gunicorn
+     apt:
+       name: gunicorn
+       state: installed
+       update_cache: true
+
+   - name: Install nginx
+     apt:
+       name: nginx
+       state: installed
+       update_cache: true
+
+   - name: Install supervisor
+     apt:
+       name: supervisor
+       state: installed
+       update_cache: true
+
+   - name: Create flask directory
+     file:
+       path: /root/flask_project
+       state: directory
+       owner: root
+       group: root
+
+   - name: Create flask templates directory
+     file:
+       path: /root/flask_project/templates
+       state: directory
+       owner: root
+       group: root
+
+   - name: Create flask downloads directory
+     file:
+       path: /root/flask_project/downloads
+       state: directory
+       owner: www-data
+       group: root
+
    - name: Create ansible-test directory
      file:
        path: /root/ansible-test
@@ -44,16 +83,96 @@
    - name: Copy app.py file
      copy:
        src: app.py
-       dest: /root/ansible-test
+       dest: /root/flask_project
+       owner: root
+       group: root
+
+   - name: Copy index.html file
+     copy:
+       src: index.html
+       dest: /root/flask_project/templates
        owner: root
        group: root
 
    - cron:
        name: "Run Python Script"
-       minute: "5"
+       minute: "*"
        job: "python /root/ansible-test/downloader.py /root/ansible-test/urls.txt"
 
-   - cron:
-       name: "Run Flask"
-       minute: "5"
-       job: "python /root/ansible-test/app.py"
+   - service:
+       name: nginx
+       state: started
+
+   - file:
+       path: rm /etc/nginx/sites-enabled/default
+       state: absent
+
+   - file:
+       path: /etc/nginx/sites-available/flask_project
+       state: touch
+       mode: "u=rw,g=r,o=r"
+
+   - file:
+       src: /etc/nginx/sites-available/flask_project
+       dest: /etc/nginx/sites-enabled/flask_project
+       owner: root
+       group: root
+       state: link
+       force: true
+
+   - name: Copy sites-enabled file
+     copy:
+       src: flask_project
+       dest: /etc/nginx/sites-enabled/
+       owner: root
+       group: root
+
+   - name: Copy flask_project nginx conf file
+     copy:
+       src: flask_project
+       dest: /etc/nginx/sites-enabled/
+       owner: root
+       group: root   
+
+   - file:
+       path: /root/flask_project/downloads
+       owner: www-data
+       mode: 0766
+
+   - file:
+       path: /root
+       mode: "g+x"
+
+   - file:
+       path: /root/flask_project
+       mode: "g+x"
+
+   - file:
+       path: /root/flask_project/downloads
+       mode: "g+x"
+   
+   - user:
+       name: www-data
+       groups: root, sudo
+       append: yes
+ 
+   - service:
+       name: nginx
+       state: restarted
+   
+   - name: Copy flask_project supervisor conf file
+     copy:
+       src: flask_project.conf
+       dest: /etc/supervisor/conf.d/flask_project.conf
+       owner: root
+       group: root
+
+   - name: Copy supervisor sh file
+     copy:
+       src: superload.sh
+       dest: /root/ansible-test
+       owner: root
+       group: root
+
+   - name: Run supervisor commands
+     shell: sh /root/ansible-test/superload.sh

@@ -5,7 +5,7 @@ import sys
 from bs4 import BeautifulSoup
 
 
-base_dir = '/root/ansible-test'
+base_dir = '/root/flask_project'
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 def soupify(req):

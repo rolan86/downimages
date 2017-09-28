@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>All Files</title>
+	</head>
+	<body>
+		<h3>All downloaded Files are available below</h3>
+		<hr>
+		{% for item in files %}
+		<a href="{{ url_for('send_js', path=item) }}">{{ item }}</a>
+		<br>
+		{% endfor %}
+	<body>
+</html>
