@@ -26,6 +26,11 @@ This install.yml file is currently being worked upon to include dynamic update o
 
 The images will be served at <server_ip>
 
+Running standalone
+If you would like to only run the downloader script directly, please run it the following way:
+python downloader.py <url_text_file>
+You can run the flask web server directly by doing and the content will be served at <server_ip>:5000
+python app.py
 
 Pre-Requisites [Developed on]:
 OS:                     Ubuntu 16.04
@@ -33,3 +38,4 @@ Platform Language:      Python 2.7.12
 Configuration Manager:  Ansible
 Server:                 Nginx
 Frameworks:             Flask
+
